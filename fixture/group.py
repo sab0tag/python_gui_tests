@@ -1,18 +1,34 @@
 class GroupHelper:
+
     def __init__(self, app):
         self.app = app
 
     def get_group_list(self):
-        group_lst = []
         self.open_group_editor()
-        pass
+        tree = self.group_editor.window(auto_id="uxAddressTreeView")
+        root = tree.tree_root()
+        group_list = [node.text() for node in root.children()]
         self.close_group_editor()
-        return group_lst
+        return group_list
 
     def add_new_group(self, name):
-        group_lst = []
         self.open_group_editor()
-        pass
+        self.group_editor.window(auto_id="uxNewAddressButton").click()
+        inpt = self.group_editor.window(class_name="Edit")
+        inpt.set_text(name)
+        inpt.type_keys("\n")
+        self.close_group_editor()
+
+    def delete_exist_group(self, group):
+        self.open_group_editor()
+        tree = self.group_editor.window(auto_id="uxAddressTreeView")
+        root = tree.tree_root()
+        for node in root.children():
+            if node.text() == group:
+                node.click()
+                self.group_editor.window(auto_id="uxDeleteAddressButton").click()
+                self.group_delete_window = self.app.application.window(title="Delete group")
+                self.group_delete_window.window(auto_id="uxOKAddressButton").click()
         self.close_group_editor()
 
     def open_group_editor(self):
