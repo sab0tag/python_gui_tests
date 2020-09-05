@@ -14,12 +14,16 @@ xl.Visible = 1
 wb = xl.Workbooks.Open(file_to_save)
 ws = wb.Worksheets(1)
 data_list = []
-for each_row in range(1, 99):
+for each_row in range(1,10):
     dynamic_data = ws.Cells[each_row, 1].Value[()]
     data_list.append(dynamic_data)
 xl.Quit()
 
 
 @pytest.mark.parametrize("group", data_list, ids=[repr(x) for x in data_list])
-def test_load_groups(group):
-    pass
+def test_load_groups(app,  group):
+    old_list = app.groups.get_group_list()
+    app.groups.add_new_group(group)
+    new_list = app.groups.get_group_list()
+    old_list.append(group)
+    assert sorted(old_list) == sorted(new_list)
